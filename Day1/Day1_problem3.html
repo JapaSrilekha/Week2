@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Location Logger</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .history {
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 13px;
+            background: #f2f2f2;
+            padding: 8px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body onload="loadHistory()">
+
+<div class="container">
+    <h2>📍 Location Logger</h2>
+
+    <button onclick="getLocation()">Get My Location</button>
+
+    <div class="output" id="currentLocation"></div>
+    <div class="error" id="errorMsg"></div>
+
+    <h4>Last 5 Locations:</h4>
+    <div class="history" id="historyBox"></div>
+</div>
+
+<script>
+
+function getLocation() {
+
+    document.getElementById("errorMsg").innerHTML = "";
+
+    if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(
+            successCallback,
+            errorCallback,
+            { timeout: 10000 } 
+        );
+
+    } else {
+        document.getElementById("errorMsg").innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function successCallback(position) {
+
+    let latitude = position.coords.latitude;
+    let longitude = position.coords.longitude;
+
+    document.getElementById("currentLocation").innerHTML =
+        "Latitude: " + latitude + "<br>Longitude: " + longitude;
+
+    let locationData = {
+        lat: latitude,
+        lon: longitude,
+        time: new Date().toLocaleString()
+    };
+
+    saveLocation(locationData);
+}
+
+function errorCallback(error) {
+
+    let message = "";
+
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            message = "Permission denied by user.";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            message = "Location information is unavailable.";
+            break;
+        case error.TIMEOUT:
+            message = "Location request timed out.";
+            break;
+        default:
+            message = "An unknown error occurred.";
+    }
+
+    document.getElementById("errorMsg").innerHTML = message;
+}
+
+function saveLocation(newLocation) {
+
+    let locations = JSON.parse(localStorage.getItem("locationHistory")) || [];
+
+    locations.unshift(newLocation); 
+
+    if (locations.length > 5) {
+        locations.pop(); 
+    }
+
+    localStorage.setItem("locationHistory", JSON.stringify(locations));
+
+    loadHistory();
+}
+
+function loadHistory() {
+
+    let historyBox = document.getElementById("historyBox");
+    let locations = JSON.parse(localStorage.getItem("locationHistory")) || [];
+
+    historyBox.innerHTML = "";
+
+    locations.forEach(function(loc) {
+        historyBox.innerHTML +=
+            "Lat: " + loc.lat +
+            " | Lon: " + loc.lon +
+            "<br><small>" + loc.time + "</small><hr>";
+    });
+}
+
+</script>
+
+</body>
+</html>

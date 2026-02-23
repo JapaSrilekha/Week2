@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personal Notes Saver</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            resize: none;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .saveBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .saveBtn:hover {
+            background-color: #45a049;
+        }
+
+        .clearBtn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .clearBtn:hover {
+            background-color: #d73833;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+<body onload="loadNote()">
+
+    <div class="container">
+        <h2>📝 My Daily Notes</h2>
+
+        <textarea id="noteArea" rows="6" placeholder="Write your notes here..."></textarea>
+
+        <br>
+
+        <button class="saveBtn" onclick="saveNote()">Save</button>
+        <button class="clearBtn" onclick="clearNote()">Clear</button>
+
+        <p id="message"></p>
+    </div>
+
+<script>
+
+    function loadNote() {
+        let savedNote = localStorage.getItem("myNote");
+        if (savedNote !== null) {
+            document.getElementById("noteArea").value = savedNote;
+        }
+    }
+
+    function saveNote() {
+        let noteText = document.getElementById("noteArea").value;
+        localStorage.setItem("myNote", noteText);
+
+        document.getElementById("message").style.color = "green";
+        document.getElementById("message").innerHTML = "Note saved successfully!";
+    }
+
+    function clearNote() {
+        localStorage.removeItem("myNote");
+        document.getElementById("noteArea").value = "";
+
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").innerHTML = "Note cleared!";
+    }
+
+</script>
+
+</body>
+</html>
