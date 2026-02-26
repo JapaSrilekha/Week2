@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Cart Summary</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: whitesmoke;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            width: 450px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        button {
+            padding: 8px 15px;
+            font-size: 16px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        button:hover {
+            background-color: blue;
+        }
+
+        pre {
+            background: whitesmoke;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Shopping Cart Summary</h2>
+    <button id="generateBtn">Generate Invoice</button>
+    <pre id="output"></pre>
+</div>
+
+<script>
+    
+    const cart = [
+        { name: "Laptop", price: 50000, quantity: 1 },
+        { name: "Mouse", price: 500, quantity: 2 },
+        { name: "Keyboard", price: 1500, quantity: 1 }
+    ];
+
+    
+    const calculateTotal = (cartItems) =>
+        cartItems.reduce(
+            (total, item) => total + (item.price * item.quantity),
+            0
+        );
+
+    
+    const generateInvoice = (cartItems) => {
+
+        const itemDetails = cartItems
+            .map(item =>
+                `${item.name} (₹${item.price} x ${item.quantity}) = ₹${item.price * item.quantity}`
+            )
+            .join("\n");
+
+        const totalAmount = calculateTotal(cartItems);
+
+        return `
+========= INVOICE =========
+${itemDetails}
+---------------------------
+Total Amount: ₹${totalAmount}
+===========================
+        `;
+    };
+    const output = document.getElementById("output");
+    const button = document.getElementById("generateBtn");
+
+    button.addEventListener("click", () => {
+        const invoice = generateInvoice(cart);
+        output.textContent = invoice;
+    });
+
+</script>
+
+</body>
+</html>

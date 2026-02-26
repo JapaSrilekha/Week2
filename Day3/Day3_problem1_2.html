@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Async Task Manager</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: white;
+        padding: 25px;
+        width: 350px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 15px;
+    }
+
+    input {
+        width: 80%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        padding: 7px 12px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        background: blueviolet;
+        color: white;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: plum;
+    }
+
+    ul {
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .message {
+        margin-top: 10px;
+        font-size: 14px;
+        color: green;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Async Task Manager</h2>
+
+    <input type="text" id="taskInput" placeholder="Enter task">
+    <br>
+
+    <button onclick="handleAdd()">Add Task</button>
+    <button onclick="handleDelete()">Delete Task</button>
+    <button onclick="handleList()">List Tasks</button>
+
+    <ul id="taskList"></ul>
+    <div id="message" class="message"></div>
+</div>
+
+<script>
+let tasks = [];
+
+// Simulate async storage using Promise
+const addTask = (task) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (!task) {
+                reject("Task cannot be empty!");
+            } else {
+                tasks.push(task);
+                resolve(`Task "${task}" added successfully.`);
+            }
+        }, 1000);
+    });
+};
+
+const deleteTask = (task) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (!tasks.includes(task)) {
+                reject(`Task "${task}" not found.`);
+            } else {
+                tasks = tasks.filter(t => t !== task);
+                resolve(`Task "${task}" deleted successfully.`);
+            }
+        }, 1000);
+    });
+};
+
+const listTasks = () => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(tasks);
+        }, 1000);
+    });
+};
+
+
+// UI Handlers using async/await
+
+const handleAdd = async () => {
+    const input = document.getElementById("taskInput");
+    const messageDiv = document.getElementById("message");
+
+    try {
+        const msg = await addTask(input.value.trim());
+        messageDiv.classList.remove("error");
+        messageDiv.innerHTML = msg;
+        input.value = "";
+        await handleList();
+    } catch (error) {
+        messageDiv.classList.add("error");
+        messageDiv.innerHTML = error;
+    }
+};
+
+const handleDelete = async () => {
+    const input = document.getElementById("taskInput");
+    const messageDiv = document.getElementById("message");
+
+    try {
+        const msg = await deleteTask(input.value.trim());
+        messageDiv.classList.remove("error");
+        messageDiv.innerHTML = msg;
+        input.value = "";
+        await handleList();
+    } catch (error) {
+        messageDiv.classList.add("error");
+        messageDiv.innerHTML = error;
+    }
+};
+
+const handleList = async () => {
+    const taskList = document.getElementById("taskList");
+    const data = await listTasks();
+
+    taskList.innerHTML = "";
+
+    data.forEach(task => {
+        taskList.innerHTML += `<li>${task}</li>`;
+    });
+};
+</script>
+
+</body>
+</html>

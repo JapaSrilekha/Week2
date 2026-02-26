@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theme Toggle App</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .container {
+        text-align: center;
+        margin-top: 100px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .light {
+        background-color: #ffffff;
+        color: #222222;
+    }
+
+    .light button {
+        background-color: #222222;
+        color: #ffffff;
+    }
+    .dark {
+        background-color: #121212;
+        color: #ffffff;
+    }
+
+    .dark button {
+        background-color: #ffffff;
+        color: #121212;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Theme Toggle Application</h1>
+    <p>Click the button to switch between Light and Dark Mode.</p>
+    <button id="themeToggle">Switch Theme</button>
+</div>
+
+<script>
+const body = document.body;
+const toggleButton = document.getElementById("themeToggle");
+const applySavedTheme = () => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme) {
+        body.className = savedTheme;
+    } else {
+        body.className = "light"; 
+    }
+};
+const toggleTheme = () => {
+    const currentTheme = body.classList.contains("light") ? "light" : "dark";
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+
+    body.className = newTheme;
+    localStorage.setItem("theme", newTheme);
+};
+toggleButton.addEventListener("click", toggleTheme);
+applySavedTheme();
+</script>
+
+</body>
+</html>

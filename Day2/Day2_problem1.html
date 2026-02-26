@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Marks Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: whitesmoke;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 8px 15px;
+            font-size: 16px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: blue;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: left;
+            background: whitesmoke;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .pass {
+            color: green;
+            font-weight: bold;
+        }
+
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Student Marks Analyzer</h2>
+
+    <input type="text" id="marksInput" placeholder="Enter marks separated by commas (e.g., 78,85,90)">
+    <button id="analyzeBtn">Analyze Marks</button>
+
+    <div id="output" class="result"></div>
+</div>
+
+<script>
+    
+
+    const marksInput = document.getElementById("marksInput");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const outputDiv = document.getElementById("output");
+
+    
+    const formatMarks = (input) => {
+        return input.split(",")
+                    .map(mark => Number(mark.trim()))
+                    .filter(mark => !isNaN(mark));
+    };
+
+    
+    const calculateTotal = (marksArray) => {
+        return marksArray.reduce((total, mark) => total + mark, 0);
+    };
+
+    
+    const calculateAverage = (total, count) => total / count;
+
+    
+    const getResult = (average) => average >= 40 ? "Pass" : "Fail";
+
+    
+    const analyzeMarks = () => {
+        const formattedMarks = formatMarks(marksInput.value);
+
+        if (formattedMarks.length === 0) {
+            outputDiv.innerHTML = "<span class='fail'>Please enter valid marks.</span>";
+            return;
+        }
+
+        const total = calculateTotal(formattedMarks);
+        const average = calculateAverage(total, formattedMarks.length);
+        const result = getResult(average);
+
+        outputDiv.innerHTML = `
+            <p><strong>Marks:</strong> ${formattedMarks.join(", ")}</p>
+            <p><strong>Total:</strong> ${total}</p>
+            <p><strong>Average:</strong> ${average.toFixed(2)}</p>
+            <p><strong>Result:</strong> 
+                <span class="${result === "Pass" ? "pass" : "fail"}">
+                    ${result}
+                </span>
+            </p>
+        `;
+    };
+
+    
+    analyzeBtn.addEventListener("click", analyzeMarks);
+
+</script>
+
+</body>
+</html>
